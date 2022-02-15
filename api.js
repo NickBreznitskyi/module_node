@@ -60,7 +60,7 @@ fs.writeFile(path.join(__dirname, 'main', 'inPerson', 'inPerson.txt'), inPersonU
 })
 
 const replace = () => {
-     fs.rename(path.join(__dirname, 'main', 'online', 'online.txt'), path.join(__dirname, 'main', 'inPerson', 'onlineSwitch.txt'), (err,) => {
+    fs.rename(path.join(__dirname, 'main', 'online', 'online.txt'), path.join(__dirname, 'main', 'inPerson', 'onlineSwitch.txt'), (err,) => {
         if (err) {
             console.log(err);
             throw err
@@ -78,7 +78,7 @@ const replace = () => {
             throw err
         }
     })
-    fs.rename(path.join(__dirname, 'main', 'online', 'inPersonSwitch.txt'), path.join(__dirname, 'main', 'online', 'online.txt'),(err,) => {
+    fs.rename(path.join(__dirname, 'main', 'online', 'inPersonSwitch.txt'), path.join(__dirname, 'main', 'online', 'online.txt'), (err,) => {
         if (err) {
             console.log(err);
             throw err
