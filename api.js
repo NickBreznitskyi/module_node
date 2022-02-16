@@ -8,20 +8,20 @@ fs.writeFile(path.join(__dirname, 'task1.txt'), 'qwerty', (err) => {
         console.log(err);
         throw err
     }
-})
-
-fs.readFile(path.join(__dirname, 'task1.txt'), 'utf8', (err, data) => {
-    if (err) {
-        console.log(err);
-        throw err
-    }
-    fs.writeFile(path.join(__dirname, 'newTask1.txt'), data, (err) => {
+    fs.readFile(path.join(__dirname, 'task1.txt'), 'utf8', (err, data) => {
         if (err) {
             console.log(err);
             throw err
         }
+        fs.writeFile(path.join(__dirname, 'newTask1.txt'), data, (err) => {
+            if (err) {
+                console.log(err);
+                throw err
+            }
+        })
     })
 })
+
 
 ////////////////////////////////////
 
@@ -63,22 +63,23 @@ fs.mkdir(path.join(__dirname, 'task3'), (err) => {
         console.log(err);
         throw err
     }
+    for (let i = 0; i < 3; i++) {
+        fs.mkdir(path.join(__dirname, 'task3', `subDir${i}`), (err) => {
+            if (err) {
+                console.log(err);
+                throw err
+            }
+            fs.writeFile(path.join(__dirname, 'task3', `subFile${i}.txt`), `${i}`, (err) => {
+                if (err) {
+                    console.log(err);
+                    throw err
+                }
+            })
+        })
+    }
+    task3()
 })
 
-for (let i = 0; i < 3; i++) {
-    fs.mkdir(path.join(__dirname, 'task3', `subDir${i}`), (err) => {
-        if (err) {
-            console.log(err);
-            throw err
-        }
-    })
-    fs.writeFile(path.join(__dirname, 'task3', `subFile${i}.txt`), `${i}`, (err) => {
-        if (err) {
-            console.log(err);
-            throw err
-        }
-    })
-}
 
 const task3 = () => {
     fs.readdir(path.join(__dirname, 'task3'), (err, data) => {
@@ -86,7 +87,6 @@ const task3 = () => {
             console.log(err);
             throw err
         }
-        console.log(data);
         for (const item of data) {
             if (item.split('.').length < 2) {
                 fs.rename(path.join(__dirname, 'task3', item), path.join(__dirname, 'task3', `_new${item}`), (err) => {
@@ -106,6 +106,3 @@ const task3 = () => {
         }
     })
 }
-
-task3()
-
