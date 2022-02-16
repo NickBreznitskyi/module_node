@@ -1,32 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-fs.mkdir(path.join(__dirname, 'main', 'online'), {recursive: true}, (err) => {
-    if (err) {
-        console.log(err);
-        throw err
-    }
-    fs.mkdir(path.join(__dirname, 'main', 'inPerson'), (err) => {
-        if (err) {
-            console.log(err);
-            throw err
-        }
-        fs.writeFile(path.join(__dirname, 'main', 'online', 'online.txt'), onlineUsers.map(user => `NAME: ${user.name}\nAGE: ${user.age}\nCITY: ${user.city}\n`).toString(), (err) => {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-            fs.writeFile(path.join(__dirname, 'main', 'inPerson', 'inPerson.txt'), inPersonUsers.map(user => `NAME: ${user.name}\nAGE: ${user.age}\nCITY: ${user.city}\n`).toString(), (err) => {
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
-                replace()
-            })
-        })
-    })
-})
-
 const onlineUsers = [
     {
         name: 'Andrii',
@@ -63,35 +37,53 @@ const inPersonUsers = [
     }
 ]
 
-
-
-const replace = () => {
-    fs.rename(path.join(__dirname, 'main', 'online', 'online.txt'), path.join(__dirname, 'main', 'inPerson', 'onlineSwitch.txt'), (err,) => {
+fs.mkdir(path.join(__dirname, 'main'), (err) => {
+    if (err) {
+        console.log(err);
+        throw err
+    }
+    fs.mkdir(path.join(__dirname, 'main', 'inPerson'), (err) => {
         if (err) {
             console.log(err);
             throw err
         }
-        fs.rename(path.join(__dirname, 'main', 'inPerson', 'inPerson.txt'), path.join(__dirname, 'main', 'online', 'inPersonSwitch.txt'), (err,) => {
+        fs.mkdir(path.join(__dirname, 'main', 'online'), (err) => {
             if (err) {
                 console.log(err);
                 throw err
             }
-            fs.rename(path.join(__dirname, 'main', 'inPerson', 'onlineSwitch.txt'), path.join(__dirname, 'main', 'inPerson', 'inPerson.txt'), (err,) => {
+            writeUsersTo('inPerson', inPersonUsers);
+            writeUsersTo('online', onlineUsers);
+            replace('inPerson', 'online');
+            replace('online', 'inPerson');
+        })
+
+    })
+})
+
+const writeUsersTo = (directory, arrUsers) => {
+    arrUsers.map(user => fs.writeFile(path.join(__dirname, 'main', `${directory}`, `${user.name}.txt`), `Name: ${user.name}\nAge: ${user.age}\nCity: ${user.city}`, (err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+    }))
+}
+
+const replace = (fromDir, toDir) => {
+    fs.readdir(path.join(__dirname, 'main', `${fromDir}`), (err, data) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        data.map(file => {
+            fs.rename(path.join(__dirname, 'main', `${fromDir}`, `${file}`), path.join(__dirname, 'main', `${toDir}`, `${file}`), (err) => {
                 if (err) {
                     console.log(err);
-                    throw err
+                    throw err;
                 }
-                fs.rename(path.join(__dirname, 'main', 'online', 'inPersonSwitch.txt'), path.join(__dirname, 'main', 'online', 'online.txt'), (err,) => {
-                    if (err) {
-                        console.log(err);
-                        throw err
-                    }
-                })
             })
         })
     })
-
-
-
 }
 
