@@ -1,5 +1,6 @@
 const users = [
     {
+        id: 1,
         firstName: 'Nazar',
         lastName: 'Pupkin',
         email: 'pupkin19@gmail.com',
@@ -8,6 +9,7 @@ const users = [
         city: 'Lviv'
     },
     {
+        id: 2,
         firstName: 'Vasyl',
         lastName: 'Kokos',
         email: 'kokos25@gmail.com',
@@ -16,6 +18,7 @@ const users = [
         city: 'Lviv'
     },
     {
+        id: 3,
         firstName: 'Leanne',
         lastName: 'Graham',
         email: 'Sincere@april.biz',
@@ -24,6 +27,7 @@ const users = [
         city: 'Ternopil'
     },
     {
+        id: 4,
         firstName: 'Clementine',
         lastName: 'Bauch',
         email: 'Nathan@yesenia.net',

@@ -18,6 +18,10 @@ app.get('/login', ((req, res) => {
     res.render('login');
 }))
 
+app.get('/signIn', ((req, res) => {
+    res.render('signIn')
+}))
+
 app.get('/users', ((req, res) => {
     const {age, city} = req.query;
     const filteredUsers = userFilter(age, city);
@@ -37,10 +41,20 @@ app.get('/user/:userId', ((req, res) => {
 app.post('/login', ((req, res) => {
     if (users.some(user => user.email === req.body.email)) {
         res.redirect('/error');
-    } else {
-        users.push(req.body);
-        res.redirect('/users');
+        return
     }
+    users.push({...req.body, id: users.length ? users[users.length - 1].id + 1 : 1});
+    res.redirect('/users');
+
+}))
+
+app.post('/signIn', ((req, res) => {
+    const findUser = users.find(user => user.email === req.body.email && user.password === req.body.password);
+    if(!findUser) {
+        res.redirect('/error')
+        return
+    }
+    res.redirect(`/user/${findUser.id}`)
 }))
 
 app.use(((req, res) => {
