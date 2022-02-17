@@ -35,7 +35,7 @@ app.get('/user/:userId', ((req, res) => {
 }))
 
 app.post('/login', ((req, res) => {
-    if (users.filter(user => user.email === req.body.email).length > 0) {
+    if (users.some(user => user.email === req.body.email)) {
         res.redirect('/error');
     } else {
         users.push(req.body);
