@@ -3,7 +3,6 @@ const {engine} = require('express-handlebars');
 const path = require('path');
 const users = require('./usersArray');
 const userFilter = require('./helper');
-
 const app = express();
 
 app.use(express.json());
@@ -29,19 +28,25 @@ app.get('/users', ((req, res) => {
 }))
 
 app.get('/error', ((req, res) => {
-    res.render('error');
+    res.render('error', {error});
 }))
 
 app.get('/user/:userId', ((req, res) => {
-    const {userId} = req.params;
-    const user = users[userId - 1];
+    const user = users.find(user => user.id === +req.params.userId);
+    if (!user) {
+        error = `User with ID: ${req.params.userId} exist!`;
+        res.redirect('/error');
+        return;
+    }
     res.render('user', {user})
 }))
 
 app.post('/login', ((req, res) => {
-    if (users.some(user => user.email === req.body.email)) {
+    const userExist = users.some(user => user.email === req.body.email);
+    if (userExist) {
+        error = 'User with this email exist!';
         res.redirect('/error');
-        return
+        return;
     }
     users.push({...req.body, id: users.length ? users[users.length - 1].id + 1 : 1});
     res.redirect('/users');
@@ -50,12 +55,14 @@ app.post('/login', ((req, res) => {
 
 app.post('/signIn', ((req, res) => {
     const findUser = users.find(user => user.email === req.body.email && user.password === req.body.password);
-    if(!findUser) {
+    if (!findUser) {
+        error = 'Wrong email or password'
         res.redirect('/error')
         return
     }
     res.redirect(`/user/${findUser.id}`)
 }))
+
 
 app.use(((req, res) => {
     res.render('notFound');
