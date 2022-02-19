@@ -1,4 +1,4 @@
-const users = require("./usersArray");
+const users = require("./db/usersArray");
 const userFilter = (age, city) => {
     let usersFilter = [...users];
     if (age) {
