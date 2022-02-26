@@ -5,9 +5,11 @@
   "username": "root",
   "password": "root",
   "database": "okten",
-  "synchronize": true,
-  "logging": false,
+  "synchronize": false,
+  "logging": "all",
+  "autoLoadEntities": true,
   "entities": [
+    "src/entity/**/*.ts"
   ],
   "migrations": [
     "src/migration/**/*.ts"
