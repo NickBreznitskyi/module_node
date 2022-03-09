@@ -5,12 +5,14 @@ import { IPost, Post } from './post.entity';
 import { IComment, Comment } from './comment.entity';
 
 export interface IUser {
+    id: number;
     firstName: string;
     lastName: string;
     age?: number;
     phone: string;
     email: string;
     password: string;
+    role: string;
     posts: IPost[];
     comments: IComment[];
 }
@@ -58,6 +60,13 @@ export class User extends CommonFields implements IUser {
         nullable: false,
     })
         password: string;
+
+    @Column({
+        type: 'varchar',
+        width: 255,
+        nullable: false,
+    })
+        role: string;
 
     @OneToMany(() => Post, (post) => post.user)
         posts: Post[];
