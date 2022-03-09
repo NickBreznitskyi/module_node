@@ -7,6 +7,8 @@ import { User } from './user.entity';
 export interface IToken {
     id?: number;
     userId: number;
+    userEmail?:string;
+    accessToken?:string;
     refreshToken: string;
 }
 
