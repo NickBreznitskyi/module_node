@@ -1,8 +1,10 @@
-import { EntityRepository, getManager, Repository } from 'typeorm';
+import {
+    DeleteResult, EntityRepository, getManager, Repository,
+} from 'typeorm';
 
-import { IToken, Token } from '../../entity/token.entity';
+import { IToken, Token } from '../../entity';
 import { ITokenRepository } from './token.repository.interface';
-import { ITokenDataToSave } from '../../interfaces/token.interface';
+import { ITokenDataToSave } from '../../interfaces';
 
 @EntityRepository(Token)
 class TokenRepository extends Repository<Token> implements ITokenRepository {
@@ -12,6 +14,10 @@ class TokenRepository extends Repository<Token> implements ITokenRepository {
 
     public async findTokenByUserId(userId: number): Promise<IToken | undefined> {
         return getManager().getRepository(Token).findOne({ userId });
+    }
+
+    public async deleteByParams(findObject: Partial<IToken>): Promise<DeleteResult> {
+        return getManager().getRepository(Token).delete(findObject);
     }
 }
 
