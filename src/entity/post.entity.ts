@@ -5,6 +5,7 @@ import {
 import { CommonFields } from './commonFields.entity';
 import { User } from './user.entity';
 import { IComment, Comment } from './comment.entity';
+import { config } from '../config/config';
 
 export interface IPost {
     userId: number;
@@ -13,7 +14,7 @@ export interface IPost {
     comments: IComment[];
 }
 
-@Entity('Posts', { database: 'okten' })
+@Entity('Posts', { database: config.MYSQL_DATABASE_NAME })
 export class Post extends CommonFields implements IPost {
     @Column({
         type: 'int',

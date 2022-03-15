@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { IUser } from '../entity/user.entity';
 import { userRepository } from '../repositories/user/user.repository';
+import { config } from '../config/config';
 
 class UserService {
     public async getUsers(): Promise<IUser[]> {
@@ -32,7 +33,7 @@ class UserService {
     }
 
     private _hashPassword(password: string): Promise<string> {
-        return bcrypt.hash(password, 10);
+        return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
     }
 }
 
