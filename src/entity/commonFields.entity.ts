@@ -16,8 +16,8 @@ export class CommonFields implements ICommonFields {
         nullable: false,
         default: Date.now(),
     })
-    @CreateDateColumn()
-        createdAt:string;
+    @CreateDateColumn({ type: 'timestamp' })
+        createdAt: string;
 
     @Column()
     @DeleteDateColumn({

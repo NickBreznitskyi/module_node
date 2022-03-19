@@ -1,9 +1,9 @@
 import { DeleteResult, UpdateResult } from 'typeorm';
 import bcrypt from 'bcrypt';
 
-import { IUser } from '../entity/user.entity';
-import { userRepository } from '../repositories/user/user.repository';
-import { config } from '../config/config';
+import { IUser } from '../entity';
+import { userRepository } from '../repositories';
+import { config } from '../config';
 
 class UserService {
     public async getUsers(): Promise<IUser[]> {
@@ -30,6 +30,14 @@ class UserService {
 
     public async deleteUser(id: string): Promise<DeleteResult> {
         return userRepository.deleteUser(+id);
+    }
+
+    public async compareUserPasswords(password: string, hash: string): Promise<void | Error> {
+        const isPasswordUnique = await bcrypt.compare(password, hash);
+
+        if (!isPasswordUnique) {
+            throw new Error('User not exists');
+        }
     }
 
     private _hashPassword(password: string): Promise<string> {

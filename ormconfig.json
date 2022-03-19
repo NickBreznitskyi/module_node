@@ -6,7 +6,7 @@
   "password": "root",
   "database": "okten",
   "synchronize": false,
-  "logging": "all",
+  "logging": false,
   "autoLoadEntities": true,
   "entities": [
     "src/entity/**/*.ts"

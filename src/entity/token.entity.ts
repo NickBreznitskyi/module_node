@@ -4,18 +4,18 @@ import {
 
 import { User } from './user.entity';
 import { CommonFields, ICommonFields } from './commonFields.entity';
-import { config } from '../config/config';
+import { config } from '../config';
 
-export interface IToken extends ICommonFields {
+export interface IToken extends ICommonFields{
     userId: number;
     refreshToken: string;
+    accessToken: string;
 }
 
 @Entity('Tokens', { database: config.MYSQL_DATABASE_NAME })
 export class Token extends CommonFields implements IToken {
     @Column({
         type: 'int',
-        nullable: false,
     })
         userId: number;
 
@@ -25,6 +25,13 @@ export class Token extends CommonFields implements IToken {
         nullable: false,
     })
         refreshToken: string;
+
+    @Column({
+        type: 'varchar',
+        width: 255,
+        nullable: false,
+    })
+        accessToken: string;
 
     @OneToOne(() => User)
     @JoinColumn({ name: 'userId' })
