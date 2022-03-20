@@ -46,6 +46,26 @@ class AuthController {
             res.status(400).json(e);
         }
     }
+
+    public async refresh(req: IRequestExtended, res: Response): Promise<void | Error> {
+        try {
+            const { id, email } = req.user as IUser;
+
+            await tokenService.deleteUserTokenPair(id);
+
+            const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
+
+            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+
+            res.json({
+                refreshToken,
+                accessToken,
+                user: req.user,
+            });
+        } catch (e: any) {
+            res.status(400).json(e);
+        }
+    }
 }
 
 export const authController = new AuthController();

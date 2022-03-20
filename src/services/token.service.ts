@@ -39,10 +39,10 @@ class TokenService {
         return tokenRepository.deleteByParams({ userId });
     }
 
-    public async verifyToken(authToken: string, tokenType = 'access'): Promise<IUserPayload> {
+    public async verifyToken(authToken: string, tokenType = config.TYPE_ACCESS): Promise<IUserPayload> {
         let secretWord = config.SECRET_ACCESS_KEY;
 
-        if (tokenType === 'refresh') {
+        if (tokenType === config.TYPE_REFRESH) {
             secretWord = config.SECRET_REFRESH_KEY;
         }
 
