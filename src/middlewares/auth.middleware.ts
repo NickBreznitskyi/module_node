@@ -14,21 +14,16 @@ class AuthMiddleware {
                 throw new Error('No token');
             }
 
-            const tokenPairFromDbByAccess = await tokenRepository.findByParams({ accessToken: token });
-            const tokenPairFromDbByRefresh = await tokenRepository.findByParams({ refreshToken: token });
+            const { tokenType } = req;
 
-            if (!tokenPairFromDbByAccess && !tokenPairFromDbByRefresh) {
+            const tokenPairFromDb = await tokenRepository.findByParams(
+                tokenType === config.TYPE_ACCESS
+                    ? { accessToken: token }
+                    : { refreshToken: token },
+            );
+
+            if (!tokenPairFromDb) {
                 throw new Error('Token not valid');
-            }
-
-            let tokenType = config.TYPE_ACCESS;
-
-            if (!tokenPairFromDbByAccess) {
-                tokenType = config.TYPE_REFRESH;
-            }
-
-            if (!tokenPairFromDbByRefresh) {
-                tokenType = config.TYPE_ACCESS;
             }
 
             const { userEmail } = await tokenService.verifyToken(token, tokenType);
