@@ -23,7 +23,7 @@ class AuthController {
 
         await tokenService.deleteUserTokenPair(id);
 
-        return res.json('Ok');
+        return res.sendStatus(204);
     }
 
     public async login(req: IRequestExtended, res: Response) {
@@ -43,7 +43,7 @@ class AuthController {
                 user: req.user,
             });
         } catch (e: any) {
-            res.status(400).json(e);
+            res.status(401).json(e);
         }
     }
 
