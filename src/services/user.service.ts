@@ -1,9 +1,9 @@
 import { DeleteResult, UpdateResult } from 'typeorm';
 import bcrypt from 'bcrypt';
 
+import { config } from '../config';
 import { IUser } from '../entity';
 import { userRepository } from '../repositories';
-import { config } from '../config';
 
 class UserService {
     public async getUsers(): Promise<IUser[]> {

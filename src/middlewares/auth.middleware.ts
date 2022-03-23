@@ -1,9 +1,7 @@
 import { NextFunction, Response } from 'express';
 
-import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
-import { tokenRepository } from '../repositories';
-import { config } from '../config';
+import { tokenService, userService } from '../services';
 
 class AuthMiddleware {
     public async checkToken(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
@@ -16,11 +14,7 @@ class AuthMiddleware {
 
             const { tokenType } = req;
 
-            const tokenPairFromDb = await tokenRepository.findByParams(
-                tokenType === config.TYPE_ACCESS
-                    ? { accessToken: token }
-                    : { refreshToken: token },
-            );
+            const tokenPairFromDb = await tokenService.getTokenPairFromDb(token, tokenType);
 
             if (!tokenPairFromDb) {
                 throw new Error('Token not valid');

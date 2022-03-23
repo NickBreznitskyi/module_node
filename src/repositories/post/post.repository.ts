@@ -2,7 +2,9 @@ import {
     EntityRepository, getManager, Repository, UpdateResult,
 } from 'typeorm';
 
-import { IPost, Post } from '../../entity/post.entity';
+import {
+    IPost, Post,
+} from '../../entity';
 import { IPostRepository } from './post.repository.interface';
 
 @EntityRepository(Post)
@@ -13,10 +15,14 @@ class PostRepository extends Repository<Post> implements IPostRepository {
 
     public async getUserPosts(id: number): Promise<IPost[]> {
         return getManager().getRepository(Post)
-            .createQueryBuilder('post')
-            .where('post.userId = :id', { id })
-            .leftJoin('User', 'user', 'user.id = post.userId')
+            .createQueryBuilder('posts')
+            .where('posts.userId = :id', { id })
             .getMany();
+    }
+
+    public async getUserPostByParams(filteredObject: Partial<IPost>): Promise<IPost | undefined> {
+        return getManager().getRepository(Post)
+            .findOne(filteredObject);
     }
 
     public async updatePost(id: number, title: string, text: string): Promise<UpdateResult> {

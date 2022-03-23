@@ -2,8 +2,8 @@ import express from 'express';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
-import { apiRouter } from './router/api.router';
-import { config } from './config/config';
+import { config } from './config';
+import { apiRouter } from './router';
 
 const app = express();
 

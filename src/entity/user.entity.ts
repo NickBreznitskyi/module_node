@@ -1,9 +1,9 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
+import { config } from '../config';
+import { IComment, Comment } from './comment.entity';
 import { CommonFields, ICommonFields } from './commonFields.entity';
 import { IPost, Post } from './post.entity';
-import { IComment, Comment } from './comment.entity';
-import { config } from '../config';
 
 export interface IUser extends ICommonFields{
     firstName: string;

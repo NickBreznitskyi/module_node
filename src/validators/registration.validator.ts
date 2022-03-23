@@ -3,7 +3,7 @@ import joi from 'joi';
 import { IUser } from '../entity';
 import { validatorErrorMessages } from '../constants';
 
-export const userValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
+export const registrationValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
     firstName: joi.string()
         .alphanum()
         .min(3)
@@ -12,8 +12,8 @@ export const userValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
         .required()
         .messages({
             'string.empty': validatorErrorMessages.stringEmpty,
-            'string.min': validatorErrorMessages.stringMin,
-            'string.max': validatorErrorMessages.stringMax,
+            'string.min': validatorErrorMessages.stringMinUser,
+            'string.max': validatorErrorMessages.stringMaxUser,
         }),
     lastName: joi.string()
         .alphanum()
@@ -23,8 +23,8 @@ export const userValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
         .required()
         .messages({
             'string.empty': validatorErrorMessages.stringEmpty,
-            'string.min': validatorErrorMessages.stringMin,
-            'string.max': validatorErrorMessages.stringMax,
+            'string.min': validatorErrorMessages.stringMinUser,
+            'string.max': validatorErrorMessages.stringMaxUser,
         }),
     age: joi.number()
         .min(0)

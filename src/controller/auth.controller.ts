@@ -1,19 +1,13 @@
 import { Request, Response } from 'express';
 
-import { authService, tokenService, userService } from '../services';
-import { ITokenData, IRequestExtended } from '../interfaces';
-import { COOKIE } from '../constants';
 import { IUser } from '../entity';
+import { IRequestExtended, ITokenData } from '../interfaces';
 import { tokenRepository } from '../repositories';
+import { authService, tokenService, userService } from '../services';
 
 class AuthController {
     public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
         const data = await authService.registration(req.body);
-        res.cookie(
-            COOKIE.nameRefreshToken,
-            data.refreshToken,
-            { maxAge: COOKIE.maxAgeRefreshToken, httpOnly: true },
-        );
 
         return res.json(data);
     }
@@ -28,14 +22,28 @@ class AuthController {
 
     public async login(req: IRequestExtended, res: Response) {
         try {
-            const { id, email, password: hashPassword } = req.user as IUser;
+            const {
+                id,
+                email,
+                password: hashPassword,
+            } = req.user as IUser;
             const { password } = req.body;
 
             await userService.compareUserPasswords(password, hashPassword);
 
-            const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
+            const {
+                refreshToken,
+                accessToken,
+            } = tokenService.generateTokenPair({
+                userId: id,
+                userEmail: email,
+            });
 
-            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+            await tokenRepository.createToken({
+                refreshToken,
+                accessToken,
+                userId: id,
+            });
 
             res.json({
                 refreshToken,
@@ -43,19 +51,33 @@ class AuthController {
                 user: req.user,
             });
         } catch (e: any) {
-            res.status(401).json(e);
+            res.status(401)
+                .json(e);
         }
     }
 
     public async refresh(req: IRequestExtended, res: Response): Promise<void | Error> {
         try {
-            const { id, email } = req.user as IUser;
+            const {
+                id,
+                email,
+            } = req.user as IUser;
 
             await tokenService.deleteUserTokenPair(id);
 
-            const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
+            const {
+                refreshToken,
+                accessToken,
+            } = tokenService.generateTokenPair({
+                userId: id,
+                userEmail: email,
+            });
 
-            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+            await tokenRepository.createToken({
+                refreshToken,
+                accessToken,
+                userId: id,
+            });
 
             res.json({
                 refreshToken,
@@ -63,7 +85,8 @@ class AuthController {
                 user: req.user,
             });
         } catch (e: any) {
-            res.status(400).json(e);
+            res.status(400)
+                .json(e);
         }
     }
 }

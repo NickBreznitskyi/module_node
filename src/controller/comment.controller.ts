@@ -1,23 +1,34 @@
 import { Request, Response } from 'express';
 import { UpdateResult } from 'typeorm';
 
-import { commentService } from '../services/comment.service';
-import { IComment } from '../entity/comment.entity';
+import { IComment, IUser } from '../entity';
+import { IRequestExtended } from '../interfaces';
+import { commentService } from '../services';
 
 class CommentController {
-    public async createComment(req: Request, res: Response): Promise<Response<IComment>> {
-        const createdComment = await commentService.createComment(req.body);
+    public async createComment(req: IRequestExtended, res: Response): Promise<Response<IComment>> {
+        const { id } = req.user as IUser;
+        const { postId } = req.params;
+        const { text } = req.body;
+        const createdComment = await commentService.createComment({
+            authorId: id,
+            postId: +postId,
+            text,
+        });
         return res.json(createdComment);
     }
 
     public async getUserComments(req: Request, res: Response): Promise<Response<IComment[]>> {
-        const { id } = req.params;
-        const userComments = await commentService.getUserComments(id);
+        const { userId } = req.params;
+        const userComments = await commentService.getUserComments(userId);
         return res.json(userComments);
     }
 
     public async setLikeDislike(req: Request): Promise<UpdateResult | undefined> {
-        const { action, commentId } = req.body;
+        const {
+            action,
+            commentId,
+        } = req.body;
         return commentService.setLikeDislike(action, commentId);
     }
 }

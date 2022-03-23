@@ -2,9 +2,9 @@ import {
     Column, Entity, JoinColumn, OneToOne,
 } from 'typeorm';
 
-import { User } from './user.entity';
-import { CommonFields, ICommonFields } from './commonFields.entity';
 import { config } from '../config';
+import { CommonFields, ICommonFields } from './commonFields.entity';
+import { User } from './user.entity';
 
 export interface IToken extends ICommonFields{
     userId: number;

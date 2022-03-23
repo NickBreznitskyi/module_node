@@ -2,10 +2,10 @@ import {
     Column, Entity, JoinColumn, ManyToOne,
 } from 'typeorm';
 
+import { config } from '../config';
 import { CommonFields } from './commonFields.entity';
-import { User } from './user.entity';
 import { Post } from './post.entity';
-import { config } from '../config/config';
+import { User } from './user.entity';
 
 export interface IComment {
     text: string;

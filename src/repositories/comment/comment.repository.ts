@@ -2,12 +2,12 @@ import {
     EntityRepository, getManager, Repository, UpdateResult,
 } from 'typeorm';
 
-import { Comment, IComment } from '../../entity/comment.entity';
 import { ICommentRepository } from './comment.repository.interface';
+import { Comment, IComment } from '../../entity';
 
 @EntityRepository(Comment)
 class CommentRepository extends Repository<Comment> implements ICommentRepository {
-    public async createComments(comment: IComment): Promise<IComment> {
+    public async createComments(comment: Partial<IComment>): Promise<IComment> {
         return getManager().getRepository(Comment).save(comment);
     }
 

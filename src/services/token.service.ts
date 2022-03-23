@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 
 import { config } from '../config';
-import { IToken } from '../entity';
-import { tokenRepository } from '../repositories';
+import { IToken, Token } from '../entity';
 import { ITokenPair, IUserPayload } from '../interfaces';
+import { tokenRepository } from '../repositories';
 
 class TokenService {
     public generateTokenPair(payload: IUserPayload): ITokenPair {
@@ -47,6 +47,14 @@ class TokenService {
         }
 
         return jwt.verify(authToken, secretWord as string) as IUserPayload;
+    }
+
+    public async getTokenPairFromDb(token: string, tokenType: string | undefined): Promise<Token | undefined> {
+        return tokenRepository.findByParams(
+            tokenType === config.TYPE_ACCESS
+                ? { accessToken: token }
+                : { refreshToken: token },
+        );
     }
 }
 

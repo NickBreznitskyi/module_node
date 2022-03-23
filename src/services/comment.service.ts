@@ -1,10 +1,10 @@
 import { UpdateResult } from 'typeorm';
 
-import { IComment } from '../entity/comment.entity';
-import { commentRepository } from '../repositories/comment/comment.repository';
+import { IComment } from '../entity';
+import { commentRepository } from '../repositories';
 
 class CommentService {
-    public async createComment(comment: IComment): Promise<IComment> {
+    public async createComment(comment: Partial<IComment>): Promise<IComment> {
         return commentRepository.createComments(comment);
     }
 

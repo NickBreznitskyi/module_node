@@ -1,9 +1,9 @@
 import { Repository, UpdateResult } from 'typeorm';
 
-import { Comment, IComment } from '../../entity/comment.entity';
+import { Comment, IComment } from '../../entity';
 
 export interface ICommentRepository {
-    createComments(comment: IComment): Promise<IComment>;
+    createComments(comment: Partial<IComment>): Promise<IComment>;
     getUserComments(id: number): Promise<IComment[]>;
     getQueryRunner(): Promise<Repository<Comment>>;
     getComment(queryRunner: any, id: number): Promise<IComment>;

@@ -1,12 +1,26 @@
 import { Router } from 'express';
 
-import { userController } from '../controller/user.controller';
+import { userController } from '../controller';
+import { authMiddleware, tokenTypeMiddleware, userMiddleware } from '../middlewares';
 
 const router = Router();
 
 router.get('/', userController.getUsers);
-router.post('/', userController.createUser);
-router.patch('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+router.patch(
+    '/:id',
+    userMiddleware.loginValidator,
+    userMiddleware.checkConfirmPassword,
+    tokenTypeMiddleware.tokenTypeAccess,
+    authMiddleware.checkToken,
+    userMiddleware.checkUserByParams,
+    userController.updateUser,
+);
+router.delete(
+    '/:id',
+    tokenTypeMiddleware.tokenTypeAccess,
+    authMiddleware.checkToken,
+    userMiddleware.checkUserByParams,
+    userController.deleteUser,
+);
 
 export const userRouter = router;

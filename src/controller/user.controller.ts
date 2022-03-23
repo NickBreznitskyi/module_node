@@ -1,18 +1,14 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
-import { IUser } from '../entity/user.entity';
-import { userService } from '../services/user.service';
+import { IUser } from '../entity';
+import { IRequestExtended } from '../interfaces';
+import { userService } from '../services';
 
 class UserController {
     public async getUsers(req:Request, res: Response): Promise<Response<IUser[]>> {
         const users = await userService.getUsers();
         return res.json(users);
-    }
-
-    public async createUser(req: Request, res: Response): Promise<Response<IUser>> {
-        const createdUser = await userService.createUser(req.body);
-        return res.json(createdUser);
     }
 
     public async getUserByEmail(req:Request, res:Response): Promise<Response<IUser>> {
@@ -21,7 +17,7 @@ class UserController {
         return res.json(user);
     }
 
-    public async updateUser(req: Request, res: Response): Promise<Response<UpdateResult>> {
+    public async updateUser(req: IRequestExtended, res: Response): Promise<Response<UpdateResult>> {
         const {
             email,
             password,
