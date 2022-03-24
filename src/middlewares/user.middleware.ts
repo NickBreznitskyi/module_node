@@ -1,9 +1,9 @@
 import { NextFunction, Response } from 'express';
 
+import { ErrorHandler, errorMessages } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { userService } from '../services';
 import { loginAndUpdateUserValidator, registrationValidator } from '../validators';
-import { ErrorHandler } from '../error/ErrorHandler';
 
 class UserMiddleware {
     public async checkIsUserExist(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
@@ -11,7 +11,7 @@ class UserMiddleware {
             const userFromDb = await userService.getUserByEmail(req.body.email);
 
             if (!userFromDb) {
-                next(new ErrorHandler('User not found', 404));
+                next(new ErrorHandler(errorMessages.user.notFound, 404));
                 return;
             }
 
@@ -27,7 +27,7 @@ class UserMiddleware {
             const userFromDb = await userService.getUserByEmail(req.body.email);
 
             if (userFromDb) {
-                next(new ErrorHandler('User with this email already exist', 400));
+                next(new ErrorHandler(errorMessages.user.exist, 400));
                 return;
             }
 
@@ -40,7 +40,7 @@ class UserMiddleware {
     public async checkUserByParams(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
         try {
             if (+req.params.id !== req.user?.id) {
-                next(new ErrorHandler('No access', 403));
+                next(new ErrorHandler(errorMessages.noAccess, 403));
                 return;
             }
             next();
@@ -54,7 +54,7 @@ class UserMiddleware {
             const { password, confirmPassword } = req.body;
 
             if (password !== confirmPassword) {
-                next(new ErrorHandler('Passwords do not match', 400));
+                next(new ErrorHandler(errorMessages.passNoMatch, 400));
                 return;
             }
 

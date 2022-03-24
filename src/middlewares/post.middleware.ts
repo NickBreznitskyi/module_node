@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 
 import { IUser } from '../entity';
+import { ErrorHandler, errorMessages } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { postService } from '../services';
 import { postValidator } from '../validators';
-import { ErrorHandler } from '../error/ErrorHandler';
 
 class PostMiddleware {
     public postValidator(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
@@ -39,7 +39,7 @@ class PostMiddleware {
             const userPost = await postService.getUserPostByParams({ id: +postId, userId: id });
 
             if (!userPost) {
-                next(new ErrorHandler('Post not found', 404));
+                next(new ErrorHandler(errorMessages.post.notFound, 404));
                 return;
             }
 

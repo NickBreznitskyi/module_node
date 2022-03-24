@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 
 import { actionType } from '../constants';
+import { ErrorHandler, errorMessages } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { postService } from '../services';
 import { commentValidator } from '../validators';
-import { ErrorHandler } from '../error/ErrorHandler';
 
 class CommentMiddleware {
     public commentValidator(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
@@ -37,7 +37,7 @@ class CommentMiddleware {
             const userPost = await postService.getUserPostByParams({ id: +postId });
 
             if (!userPost) {
-                next(new ErrorHandler('Post not found', 404));
+                next(new ErrorHandler(errorMessages.post.notFound, 404));
                 return;
             }
 
@@ -52,12 +52,12 @@ class CommentMiddleware {
             const { action } = req.body;
 
             if (!action) {
-                next(new ErrorHandler('No action', 400));
+                next(new ErrorHandler(errorMessages.action.emptyAction, 400));
                 return;
             }
 
             if (action !== actionType.TYPE_LIKE || action !== actionType.TYPE_DISLIKE) {
-                next(new ErrorHandler('Action type not valid', 400));
+                next(new ErrorHandler(errorMessages.action.notValid, 400));
                 return;
             }
 

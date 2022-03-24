@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 
-import { ErrorHandler } from '../error/ErrorHandler';
+import { ErrorHandler, errorMessages } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { tokenService, userService } from '../services';
 
@@ -10,7 +10,7 @@ class AuthMiddleware {
             const token = req.get('Authorization');
 
             if (!token) {
-                next(new ErrorHandler('No token', 400));
+                next(new ErrorHandler(errorMessages.token.emptyToken, 400));
                 return;
             }
 
@@ -19,7 +19,7 @@ class AuthMiddleware {
             const tokenPairFromDb = await tokenService.getTokenPairFromDb(token, tokenType);
 
             if (!tokenPairFromDb) {
-                next(new ErrorHandler('Token not valid', 401));
+                next(new ErrorHandler(errorMessages.token.notValid, 401));
                 return;
             }
 
@@ -28,7 +28,7 @@ class AuthMiddleware {
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                next(new ErrorHandler('Token not valid', 401));
+                next(new ErrorHandler(errorMessages.token.notValid, 401));
                 return;
             }
 

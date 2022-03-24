@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { config } from '../config';
 import { IUser } from '../entity';
 import { userRepository } from '../repositories';
-import { ErrorHandler } from '../error/ErrorHandler';
+import { ErrorHandler } from '../error';
 
 class UserService {
     public async getUsers(): Promise<IUser[]> {
