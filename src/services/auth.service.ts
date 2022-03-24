@@ -5,12 +5,6 @@ import { userService } from './user.service';
 
 class AuthService {
     public async registration(body: IUser): Promise<ITokenData> {
-        const { email } = body;
-
-        const user = await userService.getUserByEmail(email);
-        if (user) {
-            throw new Error(`User with this email: ${email} already exist`);
-        }
         const createdUser = await userService.createUser(body);
         return this._getTokenData(createdUser);
     }

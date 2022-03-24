@@ -7,9 +7,17 @@ import { userRouter } from './user.router';
 
 const router = Router();
 
-router.use('/users', userRouter);
-router.use('/posts', postRouter);
-router.use('/comments', commentRouter);
 router.use('/auth', authRouter);
+router.use('/comments', commentRouter);
+router.use('/posts', postRouter);
+router.use('/users', userRouter);
+// @ts-ignore
+router.use('*', (err, req, res, next) => {
+    res
+        .status(err.code || 500)
+        .json({
+            message: err.message,
+        });
+});
 
 export const apiRouter = router;

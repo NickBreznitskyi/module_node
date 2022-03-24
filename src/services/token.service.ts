@@ -49,7 +49,7 @@ class TokenService {
         return jwt.verify(authToken, secretWord as string) as IUserPayload;
     }
 
-    public async getTokenPairFromDb(token: string, tokenType: string | undefined): Promise<Token | undefined> {
+    public async getTokenPairFromDb(token: string | undefined, tokenType: string | undefined): Promise<Token | undefined> {
         return tokenRepository.findByParams(
             tokenType === config.TYPE_ACCESS
                 ? { accessToken: token }

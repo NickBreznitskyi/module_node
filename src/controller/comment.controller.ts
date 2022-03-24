@@ -15,13 +15,13 @@ class CommentController {
             postId: +postId,
             text,
         });
-        return res.json(createdComment);
+        return res.status(200).json(createdComment);
     }
 
     public async getUserComments(req: Request, res: Response): Promise<Response<IComment[]>> {
         const { userId } = req.params;
         const userComments = await commentService.getUserComments(userId);
-        return res.json(userComments);
+        return res.status(200).json(userComments);
     }
 
     public async setLikeDislike(req: Request): Promise<UpdateResult | undefined> {

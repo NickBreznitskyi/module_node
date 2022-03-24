@@ -2,6 +2,7 @@ import { UpdateResult } from 'typeorm';
 
 import { IComment } from '../entity';
 import { commentRepository } from '../repositories';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class CommentService {
     public async createComment(comment: Partial<IComment>): Promise<IComment> {
@@ -18,7 +19,7 @@ class CommentService {
         const comment = await commentRepository.getComment(queryRunner, commentId);
 
         if (!comment) {
-            throw new Error('wrong comment ID');
+            throw new ErrorHandler('wrong comment ID', 400);
         }
 
         if (action === 'like') {

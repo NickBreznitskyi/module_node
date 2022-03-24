@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { IUser } from '../entity';
 import { IRequestExtended, ITokenData } from '../interfaces';
@@ -6,21 +6,30 @@ import { tokenRepository } from '../repositories';
 import { authService, tokenService, userService } from '../services';
 
 class AuthController {
-    public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
-        const data = await authService.registration(req.body);
+    public async registration(req: Request, res: Response, next: NextFunction): Promise<Response<ITokenData | Error> | undefined> {
+        try {
+            const data = await authService.registration(req.body);
 
-        return res.json(data);
+            return res.status(201)
+                .json(data);
+        } catch (e: any) {
+            next(e);
+        }
     }
 
-    public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
-        const { id } = req.user as IUser;
+    public async logout(req: IRequestExtended, res: Response, next: NextFunction): Promise<Response<string | Error> | undefined> {
+        try {
+            const { id } = req.user as IUser;
 
-        await tokenService.deleteUserTokenPair(id);
+            await tokenService.deleteUserTokenPair(id);
 
-        return res.sendStatus(204);
+            return res.sendStatus(204);
+        } catch (e: any) {
+            next(e);
+        }
     }
 
-    public async login(req: IRequestExtended, res: Response) {
+    public async login(req: IRequestExtended, res: Response, next: NextFunction): Promise<Response<Response | Error> | undefined> {
         try {
             const {
                 id,
@@ -45,18 +54,18 @@ class AuthController {
                 userId: id,
             });
 
-            res.json({
-                refreshToken,
-                accessToken,
-                user: req.user,
-            });
+            return res.status(200)
+                .json({
+                    refreshToken,
+                    accessToken,
+                    user: req.user,
+                });
         } catch (e: any) {
-            res.status(401)
-                .json(e);
+            next(e);
         }
     }
 
-    public async refresh(req: IRequestExtended, res: Response): Promise<void | Error> {
+    public async refresh(req: IRequestExtended, res: Response, next: NextFunction): Promise<Response | undefined | Error> {
         try {
             const {
                 id,
@@ -79,14 +88,13 @@ class AuthController {
                 userId: id,
             });
 
-            res.json({
+            return res.status(200).json({
                 refreshToken,
                 accessToken,
                 user: req.user,
             });
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
         }
     }
 }

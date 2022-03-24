@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { config } from '../config';
 import { IUser } from '../entity';
 import { userRepository } from '../repositories';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class UserService {
     public async getUsers(): Promise<IUser[]> {
@@ -36,7 +37,7 @@ class UserService {
         const isPasswordUnique = await bcrypt.compare(password, hash);
 
         if (!isPasswordUnique) {
-            throw new Error('User not exists');
+            throw new ErrorHandler('Email or password not valid', 400);
         }
     }
 

@@ -4,6 +4,7 @@ import { IUser } from '../entity';
 import { IRequestExtended } from '../interfaces';
 import { postService } from '../services';
 import { postValidator } from '../validators';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class PostMiddleware {
     public postValidator(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
@@ -20,13 +21,13 @@ class PostMiddleware {
             const { error } = postValidator.validate(payload);
 
             if (error) {
-                throw new Error(`Error in Post Data : ${error.message}`);
+                next(new ErrorHandler(`Error in Post Data : ${error.message}`, 400));
+                return;
             }
 
             next();
         } catch (e: any) {
-            res.status(406)
-                .json(e.message);
+            next(e);
         }
     }
 
@@ -38,14 +39,13 @@ class PostMiddleware {
             const userPost = await postService.getUserPostByParams({ id: +postId, userId: id });
 
             if (!userPost) {
-                res.status(404).json('Post not found');
+                next(new ErrorHandler('Post not found', 404));
                 return;
             }
 
             next();
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
         }
     }
 }

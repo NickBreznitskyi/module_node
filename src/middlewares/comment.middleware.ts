@@ -4,6 +4,7 @@ import { actionType } from '../constants';
 import { IRequestExtended } from '../interfaces';
 import { postService } from '../services';
 import { commentValidator } from '../validators';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class CommentMiddleware {
     public commentValidator(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
@@ -19,13 +20,13 @@ class CommentMiddleware {
             const { error } = commentValidator.validate(payload);
 
             if (error) {
-                throw new Error(`Error in Comment Data : ${error.message}`);
+                next(new ErrorHandler(`Error in Comment Data : ${error.message}`, 400));
+                return;
             }
 
             next();
         } catch (e: any) {
-            res.status(406)
-                .json(e.message);
+            next(e);
         }
     }
 
@@ -36,15 +37,13 @@ class CommentMiddleware {
             const userPost = await postService.getUserPostByParams({ id: +postId });
 
             if (!userPost) {
-                res.status(404)
-                    .json('Post not found');
+                next(new ErrorHandler('Post not found', 404));
                 return;
             }
 
             next();
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
         }
     }
 
@@ -53,17 +52,18 @@ class CommentMiddleware {
             const { action } = req.body;
 
             if (!action) {
-                throw new Error('No action');
+                next(new ErrorHandler('No action', 400));
+                return;
             }
 
             if (action !== actionType.TYPE_LIKE || action !== actionType.TYPE_DISLIKE) {
-                throw new Error('Action type not valid');
+                next(new ErrorHandler('Action type not valid', 400));
+                return;
             }
 
             next();
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
         }
     }
 }

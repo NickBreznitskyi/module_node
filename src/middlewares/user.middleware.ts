@@ -3,6 +3,7 @@ import { NextFunction, Response } from 'express';
 import { IRequestExtended } from '../interfaces';
 import { userService } from '../services';
 import { loginAndUpdateUserValidator, registrationValidator } from '../validators';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class UserMiddleware {
     public async checkIsUserExist(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
@@ -10,38 +11,57 @@ class UserMiddleware {
             const userFromDb = await userService.getUserByEmail(req.body.email);
 
             if (!userFromDb) {
-                res.status(404).json('User not found');
+                next(new ErrorHandler('User not found', 404));
                 return;
             }
 
             req.user = userFromDb;
             next();
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
+        }
+    }
+
+    public async checkIsUserNotExist(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            const userFromDb = await userService.getUserByEmail(req.body.email);
+
+            if (userFromDb) {
+                next(new ErrorHandler('User with this email already exist', 400));
+                return;
+            }
+
+            next();
+        } catch (e: any) {
+            next(e);
         }
     }
 
     public async checkUserByParams(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
         try {
             if (+req.params.id !== req.user?.id) {
-                res.status(403).json('Forbidden');
+                next(new ErrorHandler('No access', 403));
+                return;
             }
             next();
         } catch (e: any) {
-            res.status(400)
-                .json(e);
+            next(e);
         }
     }
 
     public checkConfirmPassword(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
-        const { password, confirmPassword } = req.body;
+        try {
+            const { password, confirmPassword } = req.body;
 
-        if (password !== confirmPassword) {
-            throw new Error('Passwords do not match');
+            if (password !== confirmPassword) {
+                next(new ErrorHandler('Passwords do not match', 400));
+                return;
+            }
+
+            next();
+        } catch (e: any) {
+            next(e);
         }
-
-        next();
     }
 
     public registrationValidator(req: IRequestExtended, res: Response, next: NextFunction): void | Error {
@@ -62,13 +82,13 @@ class UserMiddleware {
             const { error } = registrationValidator.validate(payload);
 
             if (error) {
-                throw new Error(`Error in User Data : ${error.message}`);
+                next(new ErrorHandler(`Error in User Data : ${error.message}`, 400));
+                return;
             }
 
             next();
         } catch (e: any) {
-            res.status(406)
-                .json(e.message);
+            next(e);
         }
     }
 
@@ -84,13 +104,13 @@ class UserMiddleware {
             const { error } = loginAndUpdateUserValidator.validate(payload);
 
             if (error) {
-                throw new Error(`${error.message}`);
+                next(new ErrorHandler(`${error.message}`, 400));
+                return;
             }
 
             next();
         } catch (e: any) {
-            res.status(406)
-                .json(e.message);
+            next(e);
         }
     }
 }
