@@ -17,4 +17,7 @@ export const config = {
 
     TYPE_ACCESS: process.env.TYPE_ACCESS,
     TYPE_REFRESH: process.env.TYPE_REFRESH,
+
+    NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL,
+    NO_REPLY_EMAIL_PASSWORD: process.env.NO_REPLY_EMAIL_PASSWORD,
 };

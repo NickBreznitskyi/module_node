@@ -1,8 +1,9 @@
 import joi from 'joi';
 
-import { validatorErrorMessages, validatorRegex } from '../constants';
+import { validatorRegex } from '../constants';
 import { commonValidator } from './common.validator';
 import { IUser } from '../entity';
+import { validatorErrorMessages } from '../error';
 
 export const registrationValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
     firstName: commonValidator.firstLastNameValidator,

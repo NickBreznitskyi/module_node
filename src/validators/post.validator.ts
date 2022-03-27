@@ -1,8 +1,8 @@
 import joi from 'joi';
 
-import { validatorErrorMessages } from '../constants';
 import { commonValidator } from './common.validator';
 import { IPost } from '../entity';
+import { validatorErrorMessages } from '../error';
 
 export const postValidator: joi.ObjectSchema<Partial<IPost>> = joi.object({
     title: joi.string()

@@ -24,9 +24,9 @@ class UserService {
         return userRepository.getUserByEmail(email);
     }
 
-    public async updateUser(id: string, password: string, email: string):
+    public async updateUser(id: string, password: string):
         Promise<UpdateResult> {
-        return userRepository.updateUser(+id, password, email);
+        return userRepository.updateUser(+id, password);
     }
 
     public async deleteUser(id: string): Promise<DeleteResult> {

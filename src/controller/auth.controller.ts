@@ -3,12 +3,17 @@ import { NextFunction, Request, Response } from 'express';
 import { IUser } from '../entity';
 import { IRequestExtended, ITokenData } from '../interfaces';
 import { tokenRepository } from '../repositories';
-import { authService, tokenService, userService } from '../services';
+import {
+    authService, emailService, tokenService, userService,
+} from '../services';
+import { emailActionEnum } from '../constants';
 
 class AuthController {
     public async registration(req: Request, res: Response, next: NextFunction): Promise<Response<ITokenData | Error> | undefined> {
         try {
             const data = await authService.registration(req.body);
+
+            await emailService.sendMail(req.body.email, emailActionEnum.WELCOME);
 
             return res.status(201)
                 .json(data);

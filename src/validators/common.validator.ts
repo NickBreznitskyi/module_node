@@ -1,6 +1,7 @@
 import joi from 'joi';
 
-import { validatorErrorMessages, validatorRegex } from '../constants';
+import { validatorRegex } from '../constants';
+import { validatorErrorMessages } from '../error';
 
 export const commonValidator = {
     emailValidator: joi.string()

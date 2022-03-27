@@ -1,3 +1,4 @@
 export * from './actionType';
-export * from '../error/validatorErrorMessages';
+export * from './emailInfo';
+export * from './enums';
 export * from './validatorRegex';

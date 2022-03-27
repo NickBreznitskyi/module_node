@@ -19,16 +19,19 @@ class UserRepository extends Repository<User> implements IUserRepository {
             .getOne();
     }
 
+    public async getUserByParams(filteredObject: Partial<IUser>): Promise<IUser | undefined> {
+        return getManager().getRepository(User).findOne(filteredObject);
+    }
+
     public async createUser(user: IUser): Promise<IUser> {
         return getManager().getRepository(User).save(user);
     }
 
-    public async updateUser(id: number, password: string, email: string): Promise<UpdateResult> {
+    public async updateUser(id: number, password: string): Promise<UpdateResult> {
         return getManager()
             .getRepository(User)
             .update({ id }, {
                 password,
-                email,
             });
     }
 
