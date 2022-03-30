@@ -1,16 +1,16 @@
-import { emailActionEnum } from './enums';
+import { EmailActionEnum } from './enums';
 
 export const emailInfo = {
-    [emailActionEnum.WELCOME]: {
+    [EmailActionEnum.WELCOME]: {
         subject: 'Welcome to My App',
-        html: 'This is welcome email',
+        templateName: 'welcome',
     },
-    [emailActionEnum.CHANGE_PASSWORD]: {
+    [EmailActionEnum.CHANGE_PASSWORD]: {
         subject: 'Change password',
-        html: 'Your password has been successfully changed',
+        templateName: 'changePassword',
     },
-    [emailActionEnum.ACCOUNT_DELETE]: {
+    [EmailActionEnum.ACCOUNT_DELETE]: {
         subject: 'Account deleted',
-        html: 'Your account has been successfully deleted',
+        templateName: 'accountDelete',
     },
 };

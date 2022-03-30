@@ -2,18 +2,18 @@ import { NextFunction, Request, Response } from 'express';
 
 import { IUser } from '../entity';
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { tokenRepository } from '../repositories';
+import { actionTokenRepository, tokenRepository } from '../repositories';
 import {
     authService, emailService, tokenService, userService,
 } from '../services';
-import { emailActionEnum } from '../constants';
+import { ActionTokenEnum, constants, EmailActionEnum } from '../constants';
 
 class AuthController {
     public async registration(req: Request, res: Response, next: NextFunction): Promise<Response<ITokenData | Error> | undefined> {
         try {
             const data = await authService.registration(req.body);
 
-            await emailService.sendMail(req.body.email, emailActionEnum.WELCOME);
+            await emailService.sendMail(req.body.email, EmailActionEnum.WELCOME, { userName: req.body.firstName });
 
             return res.status(201)
                 .json(data);
@@ -97,6 +97,31 @@ class AuthController {
                 refreshToken,
                 accessToken,
                 user: req.user,
+            });
+        } catch (e: any) {
+            next(e);
+        }
+    }
+
+    public async sendForgotPassword(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            const { id, email, firstName } = req.user as IUser;
+
+            const actionToken = tokenService.generateActionToken({
+                userId: id,
+                userEmail: email,
+            });
+
+            await actionTokenRepository.createToken({ actionToken, userId: id, type: ActionTokenEnum.FORGOT_PASSWORD });
+
+            await emailService.sendMail(
+                email,
+                EmailActionEnum.CHANGE_PASSWORD,
+                { userName: firstName, frontendUrl: `${constants.FRONT_END_URL}?token=${actionToken}` },
+            );
+
+            return res.status(204).json({
+                actionToken,
             });
         } catch (e: any) {
             next(e);

@@ -10,4 +10,6 @@ router.post('/login', userMiddleware.loginValidator, userMiddleware.checkIsUserE
 router.post('/logout', tokenTypeMiddleware.tokenTypeAccess, authMiddleware.checkToken, authController.logout);
 router.post('/refresh', tokenTypeMiddleware.tokenTypeRefresh, authMiddleware.checkToken, authController.refresh);
 
+router.post('/forgot', userMiddleware.checkIsUserExist, authController.sendForgotPassword);
+
 export const authRouter = router;

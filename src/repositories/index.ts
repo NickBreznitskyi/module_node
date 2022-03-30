@@ -1,3 +1,5 @@
+export * from './actionToken/actionToken.repository.interface';
+export * from './actionToken/actionToken.repository';
 export * from './comment/comment.repository.interface';
 export * from './comment/comment.repository';
 export * from './post/post.repository.interface';

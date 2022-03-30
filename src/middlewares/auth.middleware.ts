@@ -16,9 +16,9 @@ class AuthMiddleware {
 
             const { tokenType } = req;
 
-            const tokenPairFromDb = await tokenService.getTokenPairFromDb(token, tokenType);
+            const tokenFromDb = await tokenService.getTokenPairFromDb(token, tokenType);
 
-            if (!tokenPairFromDb) {
+            if (!tokenFromDb) {
                 next(new ErrorHandler(errorMessages.token.notValid, 401));
                 return;
             }

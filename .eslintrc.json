@@ -25,10 +25,11 @@
             }
         ],
         "class-methods-use-this": "off",
-        "no-unused-vars": ["error", { "args":  "none"}],
+        "no-unused-vars": "off",
         "consistent-return": "off",
         "no-underscore-dangle": "off",
-        "max-len": ["error", {"code":  140}]
+        "max-len": ["error", {"code":  140}],
+        "no-shadow": "off"
     },
     "settings": {
         "import/resolver" : {

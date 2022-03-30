@@ -1,20 +1,20 @@
 import jwt from 'jsonwebtoken';
 
 import { config } from '../config';
-import { IToken, Token } from '../entity';
+import { ActionToken, IToken, Token } from '../entity';
 import { ITokenPair, IUserPayload } from '../interfaces';
-import { tokenRepository } from '../repositories';
+import { actionTokenRepository, tokenRepository } from '../repositories';
 
 class TokenService {
     public generateTokenPair(payload: IUserPayload): ITokenPair {
         const accessToken = jwt.sign(
             payload,
-            config.SECRET_ACCESS_KEY as string,
+            config.SECRET_ACCESS_KEY,
             { expiresIn: config.EXPIRES_IN_ACCESS },
         );
         const refreshToken = jwt.sign(
             payload,
-            config.SECRET_REFRESH_KEY as string,
+            config.SECRET_REFRESH_KEY,
             { expiresIn: config.EXPIRES_IN_REFRESH },
         );
 
@@ -22,6 +22,14 @@ class TokenService {
             accessToken,
             refreshToken,
         };
+    }
+
+    public generateActionToken(payload: IUserPayload): string {
+        return jwt.sign(
+            payload,
+            config.SECRET_ACTION_KEY,
+            { expiresIn: config.EXPIRES_IN_ACTION },
+        );
     }
 
     public async saveToken(userId: number, refreshToken: string, accessToken: string): Promise<IToken> {
@@ -46,10 +54,17 @@ class TokenService {
             secretWord = config.SECRET_REFRESH_KEY;
         }
 
+        if (tokenType === config.TYPE_ACTION) {
+            secretWord = config.SECRET_ACTION_KEY;
+        }
+
         return jwt.verify(authToken, secretWord as string) as IUserPayload;
     }
 
-    public async getTokenPairFromDb(token: string | undefined, tokenType: string | undefined): Promise<Token | undefined> {
+    public async getTokenPairFromDb(token: string | undefined, tokenType: string | undefined): Promise<Token | ActionToken | undefined> {
+        if (tokenType === config.TYPE_ACTION) {
+            return actionTokenRepository.getTokenByParams({ actionToken: token });
+        }
         return tokenRepository.findByParams(
             tokenType === config.TYPE_ACCESS
                 ? { accessToken: token }

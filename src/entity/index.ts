@@ -1,3 +1,4 @@
+export * from './actionToken.entity';
 export * from './comment.entity';
 export * from './commonFields.entity';
 export * from './post.entity';

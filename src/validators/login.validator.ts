@@ -4,7 +4,7 @@ import { commonValidator } from './common.validator';
 import { IUser } from '../entity';
 import { validatorErrorMessages } from '../error';
 
-export const loginAndUpdateUserValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
+export const loginValidator: joi.ObjectSchema<Partial<IUser>> = joi.object({
     email: commonValidator.emailValidator,
     password: commonValidator.passwordValidator
         .messages({

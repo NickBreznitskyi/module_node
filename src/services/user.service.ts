@@ -26,7 +26,8 @@ class UserService {
 
     public async updateUser(id: string, password: string):
         Promise<UpdateResult> {
-        return userRepository.updateUser(+id, password);
+        const hashedPassword = await this._hashPassword(password);
+        return userRepository.updateUser(+id, hashedPassword);
     }
 
     public async deleteUser(id: string): Promise<DeleteResult> {

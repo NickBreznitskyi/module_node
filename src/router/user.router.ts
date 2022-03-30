@@ -8,9 +8,9 @@ const router = Router();
 router.get('/', userController.getUsers);
 router.patch(
     '/:id',
-    userMiddleware.loginValidator,
+    userMiddleware.passwordValidator,
     userMiddleware.checkConfirmPassword,
-    tokenTypeMiddleware.tokenTypeAccess,
+    tokenTypeMiddleware.tokenTypeAction,
     authMiddleware.checkToken,
     userMiddleware.checkUserByParams,
     userController.updateUser,

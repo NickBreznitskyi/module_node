@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { ErrorHandler, errorMessages } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { userService } from '../services';
-import { loginAndUpdateUserValidator, registrationValidator } from '../validators';
+import { updatePasswordValidator, loginValidator, registrationValidator } from '../validators';
 
 class UserMiddleware {
     public async checkIsUserExist(req: IRequestExtended, res: Response, next: NextFunction): Promise<void | Error> {
@@ -30,7 +30,6 @@ class UserMiddleware {
                 next(new ErrorHandler(errorMessages.user.exist, 400));
                 return;
             }
-
             next();
         } catch (e: any) {
             next(e);
@@ -101,7 +100,37 @@ class UserMiddleware {
                 password,
             };
 
-            const { error } = loginAndUpdateUserValidator.validate(payload);
+            const { error } = loginValidator.validate(payload);
+
+            if (error) {
+                next(new ErrorHandler(`${error.message}`, 400));
+                return;
+            }
+
+            next();
+        } catch (e: any) {
+            next(e);
+        }
+    }
+
+    public emailValidator(req:IRequestExtended, res: Response, next: NextFunction): void | Error {
+        try {
+            const { error } = updatePasswordValidator.email.validate(req.body);
+
+            if (error) {
+                next(new ErrorHandler(`${error.message}`, 400));
+                return;
+            }
+
+            next();
+        } catch (e: any) {
+            next(e);
+        }
+    }
+
+    public passwordValidator(req:IRequestExtended, res: Response, next: NextFunction): void | Error {
+        try {
+            const { error } = updatePasswordValidator.password.validate(req.body);
 
             if (error) {
                 next(new ErrorHandler(`${error.message}`, 400));
