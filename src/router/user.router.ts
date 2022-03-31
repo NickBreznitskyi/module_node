@@ -6,15 +6,6 @@ import { authMiddleware, tokenTypeMiddleware, userMiddleware } from '../middlewa
 const router = Router();
 
 router.get('/', userController.getUsers);
-router.patch(
-    '/:id',
-    userMiddleware.passwordValidator,
-    userMiddleware.checkConfirmPassword,
-    tokenTypeMiddleware.tokenTypeAction,
-    authMiddleware.checkToken,
-    userMiddleware.checkUserByParams,
-    userController.updateUser,
-);
 router.delete(
     '/:id',
     tokenTypeMiddleware.tokenTypeAccess,

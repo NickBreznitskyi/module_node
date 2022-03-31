@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { DeleteResult } from 'typeorm';
 
 import { IUser } from '../entity';
-import { IRequestExtended } from '../interfaces';
 import { emailService, userService } from '../services';
 import { EmailActionEnum } from '../constants';
 import { userRepository } from '../repositories';
@@ -22,19 +21,6 @@ class UserController {
             const { email } = req.body;
             const user = await userService.getUserByEmail(email);
             return res.json(user);
-        } catch (e: any) {
-            next(e);
-        }
-    }
-
-    public async updateUser(req: IRequestExtended, res: Response, next: NextFunction): Promise<Response<UpdateResult | Error> | undefined> {
-        try {
-            const {
-                password,
-            } = req.body;
-            const { id } = req.params;
-            const updatedUser = await userService.updateUser(id, password);
-            return res.json(updatedUser);
         } catch (e: any) {
             next(e);
         }

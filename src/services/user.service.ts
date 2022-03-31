@@ -24,10 +24,10 @@ class UserService {
         return userRepository.getUserByEmail(email);
     }
 
-    public async updateUser(id: string, password: string):
+    public async updateUser(id: number, password: string):
         Promise<UpdateResult> {
         const hashedPassword = await this._hashPassword(password);
-        return userRepository.updateUser(+id, hashedPassword);
+        return userRepository.updateUser(id, hashedPassword);
     }
 
     public async deleteUser(id: string): Promise<DeleteResult> {

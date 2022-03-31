@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
+import { UpdateResult } from 'typeorm';
 import { IUser } from '../entity';
 import { IRequestExtended, ITokenData } from '../interfaces';
 import { actionTokenRepository, tokenRepository } from '../repositories';
@@ -123,6 +124,20 @@ class AuthController {
             return res.status(204).json({
                 actionToken,
             });
+        } catch (e: any) {
+            next(e);
+        }
+    }
+
+    public async updatePassword(req: IRequestExtended, res: Response, next: NextFunction):
+        Promise<Response<UpdateResult | Error> | undefined> {
+        try {
+            const {
+                password,
+            } = req.body;
+            const { id } = req.user as IUser;
+            const updatedUser = await userService.updateUser(id, password);
+            return res.json(updatedUser);
         } catch (e: any) {
             next(e);
         }
