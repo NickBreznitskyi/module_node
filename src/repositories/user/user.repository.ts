@@ -1,9 +1,13 @@
 import {
     DeleteResult, EntityRepository, getManager, Repository, UpdateResult,
 } from 'typeorm';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 
 import { IUser, User } from '../../entity';
 import { IUserRepository } from './user.repository.interface';
+
+dayjs.extend(utc);
 
 @EntityRepository(User)
 class UserRepository extends Repository<User> implements IUserRepository {
@@ -11,8 +15,33 @@ class UserRepository extends Repository<User> implements IUserRepository {
         return getManager().getRepository(User).find();
     }
 
+    public async getUserPagination(searchObject: Partial<IUser>, limit: number, skip: number):
+        Promise<[IUser[], number]> {
+        return getManager()
+            .getRepository(User)
+            .findAndCount({
+                where: searchObject,
+                skip,
+                take: limit,
+            });
+    }
+
+    public async getNewUsers(): Promise<IUser[]> {
+        return getManager()
+            .getRepository(User)
+            .createQueryBuilder('user')
+            .where('user.createdAt >= :date', {
+                date: dayjs()
+                    .utc()
+                    .startOf('day')
+                    .format(),
+            })
+            .getMany();
+    }
+
     public async getUserByEmail(email: string): Promise<IUser | undefined> {
-        return getManager().getRepository(User)
+        return getManager()
+            .getRepository(User)
             .createQueryBuilder('user')
             .where('user.email = :email', { email })
             .andWhere('user.deletedAt IS NULL')
@@ -20,11 +49,15 @@ class UserRepository extends Repository<User> implements IUserRepository {
     }
 
     public async getUserByParams(filteredObject: Partial<IUser>): Promise<IUser | undefined> {
-        return getManager().getRepository(User).findOne(filteredObject);
+        return getManager()
+            .getRepository(User)
+            .findOne(filteredObject);
     }
 
     public async createUser(user: IUser): Promise<IUser> {
-        return getManager().getRepository(User).save(user);
+        return getManager()
+            .getRepository(User)
+            .save(user);
     }
 
     public async updateUser(id: number, password: string): Promise<UpdateResult> {

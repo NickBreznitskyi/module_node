@@ -13,4 +13,8 @@ export const emailInfo = {
         subject: 'Account deleted',
         templateName: 'accountDelete',
     },
+    [EmailActionEnum.SPAM_MESSAGE]: {
+        subject: 'Great news',
+        templateName: 'spamMessage',
+    },
 };

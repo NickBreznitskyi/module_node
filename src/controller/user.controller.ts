@@ -9,7 +9,8 @@ import { userRepository } from '../repositories';
 class UserController {
     public async getUsers(req:Request, res: Response, next: NextFunction): Promise<Response<IUser[] | Error> | undefined> {
         try {
-            const users = await userService.getUsers();
+            const { page = 1, perPage = 10, ...other } = req.query;
+            const users = await userService.getUsersPagination(other, +perPage, +page);
             return res.json(users);
         } catch (e: any) {
             next(e);

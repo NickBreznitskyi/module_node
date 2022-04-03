@@ -5,10 +5,27 @@ import { config } from '../config';
 import { IUser } from '../entity';
 import { userRepository } from '../repositories';
 import { ErrorHandler } from '../error';
+import { IPaginationResponse } from '../interfaces';
 
 class UserService {
-    public async getUsers(): Promise<IUser[]> {
+    public async getUsers() {
         return userRepository.getUsers();
+    }
+
+    public async getUsersPagination(searchObject: Partial<IUser>, limit: number = 10, page: number = 1):
+        Promise<IPaginationResponse<IUser>> {
+        const skip = limit * (page - 1);
+        const [data, totalCount] = await userRepository.getUserPagination(searchObject, limit, skip);
+        return {
+            page,
+            perPage: limit,
+            totalCount,
+            data,
+        };
+    }
+
+    public async getNewUsers(): Promise<IUser[]> {
+        return userRepository.getNewUsers();
     }
 
     public async createUser(user: IUser): Promise<IUser> {
