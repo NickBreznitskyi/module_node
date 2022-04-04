@@ -21,9 +21,7 @@ export const spamMessage = async () => {
             )),
         );
 
-        await Promise.allSettled(promises)
-            .then((results) => {
-                results.forEach((result) => console.log(result));
-            });
+        const results = await Promise.allSettled(promises);
+        console.log(results);
     });
 };
