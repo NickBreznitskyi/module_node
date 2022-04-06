@@ -1,23 +1,34 @@
 import { NextFunction, Request, Response } from 'express';
-
 import { UpdateResult } from 'typeorm';
+import { UploadedFile } from 'express-fileupload';
+
+import { ActionTokenEnum, constants, EmailActionEnum } from '../constants';
 import { IUser } from '../entity';
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { actionTokenRepository, tokenRepository } from '../repositories';
+import { actionTokenRepository, tokenRepository, userRepository } from '../repositories';
 import {
-    authService, emailService, tokenService, userService,
+    authService, emailService, s3Service, tokenService, userService,
 } from '../services';
-import { ActionTokenEnum, constants, EmailActionEnum } from '../constants';
 
 class AuthController {
     public async registration(req: Request, res: Response, next: NextFunction): Promise<Response<ITokenData | Error> | undefined> {
         try {
-            const data = await authService.registration(req.body);
+            const avatar = req.files?.avatar as UploadedFile;
+
+            const createdUser = await userService.createUser(req.body);
 
             await emailService.sendMail(req.body.email, EmailActionEnum.WELCOME, { userName: req.body.firstName });
 
+            if (avatar) {
+                const uploadedFile = await s3Service.uploadFile(avatar, 'user', createdUser.id);
+
+                await userRepository.updateUser(createdUser.id, { avatar: uploadedFile.Location });
+            }
+
+            const tokenData = await authService.getTokenData(createdUser);
+
             return res.status(201)
-                .json(data);
+                .json(tokenData);
         } catch (e: any) {
             next(e);
         }

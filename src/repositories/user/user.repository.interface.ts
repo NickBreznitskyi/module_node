@@ -9,6 +9,6 @@ export interface IUserRepository {
     getUserByEmail(email: string): Promise<IUser | undefined>;
     getUserByParams(filteredObject: Partial<IUser>): Promise<IUser | undefined>;
     createUser(user: IUser): Promise<IUser>;
-    updateUser(id: number, password: string): Promise<UpdateResult>;
+    updateUser(id: number, updateObject: Partial<IUser>): Promise<UpdateResult>
     deleteUser(id: number): Promise<DeleteResult>;
 }

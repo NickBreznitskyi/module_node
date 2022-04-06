@@ -60,12 +60,8 @@ class UserRepository extends Repository<User> implements IUserRepository {
             .save(user);
     }
 
-    public async updateUser(id: number, password: string): Promise<UpdateResult> {
-        return getManager()
-            .getRepository(User)
-            .update({ id }, {
-                password,
-            });
+    public async updateUser(id: number, updateObject: Partial<IUser>): Promise<UpdateResult> {
+        return getManager().getRepository(User).update({ id }, updateObject);
     }
 
     public async deleteUser(id: number): Promise<DeleteResult> {

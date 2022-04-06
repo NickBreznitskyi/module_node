@@ -12,6 +12,7 @@ export interface IUser extends ICommonFields{
     phone: string;
     email: string;
     password: string;
+    avatar?: string;
     posts: IPost[];
     comments: IComment[];
 }
@@ -59,6 +60,12 @@ export class User extends CommonFields implements IUser {
         nullable: false,
     })
         password: string;
+
+    @Column({
+        type: 'varchar',
+        width: 255,
+    })
+        avatar: string;
 
     @OneToMany(() => Post, (post) => post.user)
         posts: Post[];
