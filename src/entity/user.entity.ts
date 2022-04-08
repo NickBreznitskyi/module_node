@@ -65,7 +65,7 @@ export class User extends CommonFields implements IUser {
         type: 'varchar',
         width: 255,
     })
-        avatar: string;
+        avatar?: string;
 
     @OneToMany(() => Post, (post) => post.user)
         posts: Post[];
