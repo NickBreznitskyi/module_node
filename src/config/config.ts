@@ -29,4 +29,6 @@ export const config = {
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
     S3_SECRET_KEY: process.env.S3_SECRET_KEY,
 
+    MONGODB_URL: process.env.MONGODB_URL || 'mongodb://localhost:27017/node',
+
 };

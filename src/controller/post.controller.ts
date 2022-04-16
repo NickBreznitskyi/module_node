@@ -37,7 +37,7 @@ class PostController {
             } = req.body;
             const { postId } = req.params;
             const updatedPost = await postService.updatePost(postId, title, text);
-            return res.json(updatedPost);
+            return res.status(204).json(updatedPost);
         } catch (e: any) {
             next(e);
         }

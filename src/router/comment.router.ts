@@ -14,6 +14,6 @@ router.post(
     commentController.createComment,
 );
 router.get('/:userId', commentController.getUserComments);
-router.post('/action', commentMiddleware.verifyActionType, commentController.setLikeDislike);
+router.patch('/action', commentMiddleware.verifyActionType, commentController.setLikeDislike);
 
 export const commentRouter = router;

@@ -132,9 +132,7 @@ class AuthController {
                 { userName: firstName, frontendUrl: `${constants.FRONT_END_URL}?token=${actionToken}` },
             );
 
-            return res.status(204).json({
-                actionToken,
-            });
+            return res.status(204);
         } catch (e: any) {
             next(e);
         }
@@ -148,7 +146,7 @@ class AuthController {
             } = req.body;
             const { id } = req.user as IUser;
             const updatedUser = await userService.updateUser(id, password);
-            return res.json(updatedUser);
+            return res.status(201).json(updatedUser);
         } catch (e: any) {
             next(e);
         }

@@ -5,6 +5,7 @@ import http from 'http';
 import 'reflect-metadata';
 import SocketIO from 'socket.io';
 import { createConnection } from 'typeorm';
+import mongoose from 'mongoose';
 
 import { config } from './config';
 import { socketController } from './controller';
@@ -28,6 +29,8 @@ app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+mongoose.connect(config.MONGODB_URL);
 
 app.use(apiRouter);
 
